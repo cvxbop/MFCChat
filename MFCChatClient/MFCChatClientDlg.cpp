@@ -164,6 +164,16 @@ void CMFCChatClientDlg::OnBnClickedConnectBtn()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	TRACE("##OnBnClickedConnectBtn");
-	TRACE("##On1BnClickedConnectBtn");
-	MessageBoxW(L"Connect Btn");
+	CString strPort, strIP;
+	//从控件里面获取内容
+	GetDlgItem(IDC_PORT_EDIT)->GetWindowText(strPort);
+	GetDlgItem(IDC_IPADDRESS)->GetWindowText(strIP);
+
+	//CString转char *
+	USES_CONVERSION;
+	LPCTSTR szPort = (LPCTSTR)T2A(strPort);
+	LPCTSTR szIP = (LPCTSTR)T2A(strIP);
+	
+	TRACE("szPort=%s,szIP=%s", szPort, szIP);
+	
 }

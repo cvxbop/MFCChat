@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(CMFCChatServerDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_START_BUTTON, &CMFCChatServerDlg::OnBnClickedStartButton)
 END_MESSAGE_MAP()
 
 
@@ -153,3 +154,19 @@ HCURSOR CMFCChatServerDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CMFCChatServerDlg::OnBnClickedStartButton()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	TRACE("##OnBnClickedStartButton");
+	CString strPort;
+	//从控件里面获取内容
+	GetDlgItem(IDC_PORT_EDIT)->GetWindowText(strPort);
+	
+
+	//CString转char *
+	USES_CONVERSION;
+	LPCTSTR szPort = (LPCTSTR)T2A(strPort);
+	TRACE("szPort=%s", szPort);
+}
