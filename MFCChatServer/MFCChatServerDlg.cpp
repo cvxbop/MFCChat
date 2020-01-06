@@ -8,6 +8,7 @@
 #include "MFCChatServerDlg.h"
 #include "afxdialogex.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -59,6 +60,7 @@ CMFCChatServerDlg::CMFCChatServerDlg(CWnd* pParent /*=nullptr*/)
 void CMFCChatServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_MSG_LIST, m_list);
 }
 
 BEGIN_MESSAGE_MAP(CMFCChatServerDlg, CDialogEx)
@@ -66,6 +68,7 @@ BEGIN_MESSAGE_MAP(CMFCChatServerDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_START_BUTTON, &CMFCChatServerDlg::OnBnClickedStartButton)
+	ON_BN_CLICKED(IDC_SEND_BUTTON, &CMFCChatServerDlg::OnBnClickedSendButton)
 END_MESSAGE_MAP()
 
 
@@ -99,7 +102,7 @@ BOOL CMFCChatServerDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-
+	GetDlgItem(IDC_PORT_EDIT)->SetWindowText(_T("5000"));
 	// TODO: 在此添加额外的初始化代码
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -169,4 +172,58 @@ void CMFCChatServerDlg::OnBnClickedStartButton()
 	USES_CONVERSION;
 	LPCTSTR szPort = (LPCTSTR)T2A(strPort);
 	TRACE("szPort=%s", szPort);
+	int iPort = _ttoi(strPort);
+	//创建服务器Socket的对象
+	m_server = new CServerSocket;
+	//创建socket	
+	if (!m_server->Create(iPort)) {
+		TRACE("m_server Create error %d", GetLastError());
+		return;
+	}
+	else
+	{
+		TRACE("m_server Create Success");
+	}
+	
+
+	if (!m_server->Listen()) {
+		TRACE("m_server Listen error %d", GetLastError());
+		return;
+	}
+
+	
+	CString str;
+	m_tm = CTime::GetCurrentTime();
+	str=m_tm.Format("%X ");
+	str += _T("建立服务");
+	m_list.AddString(str);
+	UpdateData(FALSE);
+
+}
+
+
+void CMFCChatServerDlg::OnBnClickedSendButton()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//1 获取编辑框内容
+	CString strTmpMsg;
+	GetDlgItem(IDC_SEND_EDIT)->GetWindowTextW(strTmpMsg);
+
+	USES_CONVERSION;
+	char* szSendBuf = T2A(strTmpMsg);
+	//2 发送给服务端
+	m_chat->Send(szSendBuf, 200, 0);
+
+	//3 显示到列表框
+	CString strShow = _T("服务端: ");
+	CString strTime;
+	m_tm = CTime::GetCurrentTime();
+	strTime = m_tm.Format("%X ");
+	//2019-11-17 服务端:内容
+	strShow = strTime + strShow;
+	strShow += strTmpMsg;
+	m_list.AddString(strShow);
+	UpdateData(FALSE);
+	//清空编辑框
+	GetDlgItem(IDC_SEND_EDIT)->SetWindowTextW(_T(""));
 }

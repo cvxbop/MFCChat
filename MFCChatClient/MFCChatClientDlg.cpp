@@ -59,6 +59,8 @@ CMFCChatClientDlg::CMFCChatClientDlg(CWnd* pParent /*=nullptr*/)
 void CMFCChatClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST1, m_list);
+	DDX_Control(pDX, IDC_SENDMSG_EDIT, m_input);
 }
 
 BEGIN_MESSAGE_MAP(CMFCChatClientDlg, CDialogEx)
@@ -67,6 +69,7 @@ BEGIN_MESSAGE_MAP(CMFCChatClientDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 
 ON_BN_CLICKED(IDC_CONNECT_BTN, &CMFCChatClientDlg::OnBnClickedConnectBtn)
+ON_BN_CLICKED(IDC_SEND_BTN, &CMFCChatClientDlg::OnBnClickedSendBtn)
 END_MESSAGE_MAP()
 
 
@@ -100,7 +103,8 @@ BOOL CMFCChatClientDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-
+	GetDlgItem(IDC_PORT_EDIT)->SetWindowText(_T("5000"));
+	GetDlgItem(IDC_IPADDRESS)->SetWindowText(_T("127.0.0.1"));
 	// TODO: 在此添加额外的初始化代码
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -162,7 +166,7 @@ HCURSOR CMFCChatClientDlg::OnQueryDragIcon()
 
 void CMFCChatClientDlg::OnBnClickedConnectBtn()
 {
-	// TODO: 在此添加控件通知处理程序代码
+	//把IP和端口拿到
 	TRACE("##OnBnClickedConnectBtn");
 	CString strPort, strIP;
 	//从控件里面获取内容
@@ -173,7 +177,58 @@ void CMFCChatClientDlg::OnBnClickedConnectBtn()
 	USES_CONVERSION;
 	LPCTSTR szPort = (LPCTSTR)T2A(strPort);
 	LPCTSTR szIP = (LPCTSTR)T2A(strIP);
-	
 	TRACE("szPort=%s,szIP=%s", szPort, szIP);
 	
+	int iPort = _ttoi(strPort);
+	//创建一个socket对象
+	m_client = new CMySocket;
+
+	//创建套接字 容错
+	if (!m_client->Create()) {
+		TRACE("m_client Create error %d", GetLastError());
+		return;
+	}
+
+
+	//连接
+	if (m_client->Connect(strIP, iPort)!=SOCKET_ERROR) {
+		TRACE("m_client Connect error %d", GetLastError());
+		return;
+	}
+
+	
 }
+
+
+void CMFCChatClientDlg::OnBnClickedSendBtn()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//1 获取编辑框内容
+	CString strTmpMsg;
+	GetDlgItem(IDC_SENDMSG_EDIT)->GetWindowTextW(strTmpMsg);
+
+	USES_CONVERSION;
+	char* szSendBuf = T2A(strTmpMsg);
+	//2 发送给服务端
+	m_client->Send(szSendBuf, 200, 0);
+
+	//3 显示到列表框
+	CString strShow = _T("我: ");
+	CString strTime;
+	m_tm = CTime::GetCurrentTime();
+	strTime = m_tm.Format("%X ");
+	//2019-11-17 我:内容
+	strShow = strTime + strShow;
+	strShow += strTmpMsg;
+
+	m_list.AddString(strShow);
+	UpdateData(FALSE);
+	//清空编辑框
+	GetDlgItem(IDC_SENDMSG_EDIT)->SetWindowTextW(_T(""));
+}
+
+CString CMFCChatClientDlg::CatShowString(CString strInfo, CString strMsg)
+{
+	//时间+信息(昵称)+消息
+}
+
