@@ -15,20 +15,17 @@ void CChatSocket::OnReceive(int nErrorCode)
 	//1 接收数据到szRecvBuf
 	TRACE("####Server OnReceive");
 	CMFCChatServerDlg* dlg = (CMFCChatServerDlg*)AfxGetApp()->GetMainWnd();
-	char szRecvBuf[200] = { 0 };
-	Receive(szRecvBuf, 200, 0);
+	char szRecvBuf[MAX_SERVER_BUF] = { 0 };
+	Receive(szRecvBuf, MAX_SERVER_BUF, 0);
 	TRACE("####Server szRecvBuf=%s", szRecvBuf);
 
 	//2 显示buf
 	USES_CONVERSION;
 	CString strRecvMsg = A2T(szRecvBuf);
-	CString strShow = _T("客户端: ");
-	CString strTime;
-	dlg->m_tm = CTime::GetCurrentTime();
-	strTime = dlg->m_tm.Format("%X ");
+	CString strInfo = _T("客户端: ");
+	
 	//2019-11-17 客户端:内容
-	strShow = strTime + strShow;
-	strShow += strRecvMsg;
+	CString strShow = dlg->CatShowString(strInfo,strRecvMsg);
 	dlg->m_list.AddString(strShow);
 	
 	CAsyncSocket::OnReceive(nErrorCode);

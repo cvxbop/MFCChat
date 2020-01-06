@@ -37,7 +37,7 @@ public:
 	CMySocket* m_client;
 
 	CListBox m_list;
-	CTime m_tm;	//实时时间
+	
 
 	CEdit m_input;	//shift+alt+f  查找所有引用	VA
 	afx_msg void OnBnClickedSendBtn();

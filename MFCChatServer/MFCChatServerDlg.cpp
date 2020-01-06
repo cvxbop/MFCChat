@@ -192,11 +192,11 @@ void CMFCChatServerDlg::OnBnClickedStartButton()
 	}
 
 	
-	CString str;
-	m_tm = CTime::GetCurrentTime();
-	str=m_tm.Format("%X ");
-	str += _T("建立服务");
-	m_list.AddString(str);
+	CString strShow;
+	CString strMsg= _T("");
+	CString strInfo= _T("建立服务");
+	strShow = CatShowString(strInfo, strMsg);
+	m_list.AddString(strShow);
 	UpdateData(FALSE);
 
 }
@@ -212,18 +212,28 @@ void CMFCChatServerDlg::OnBnClickedSendButton()
 	USES_CONVERSION;
 	char* szSendBuf = T2A(strTmpMsg);
 	//2 发送给服务端
-	m_chat->Send(szSendBuf, 200, 0);
+	m_chat->Send(szSendBuf, MAX_SERVER_BUF, 0);
 
 	//3 显示到列表框
-	CString strShow = _T("服务端: ");
-	CString strTime;
-	m_tm = CTime::GetCurrentTime();
-	strTime = m_tm.Format("%X ");
+	CString strInfo = _T("服务端: ");
 	//2019-11-17 服务端:内容
-	strShow = strTime + strShow;
-	strShow += strTmpMsg;
+	CString strShow = CatShowString(strInfo, strTmpMsg);
+	
+
+
 	m_list.AddString(strShow);
 	UpdateData(FALSE);
 	//清空编辑框
 	GetDlgItem(IDC_SEND_EDIT)->SetWindowTextW(_T(""));
+}
+CString CMFCChatServerDlg::CatShowString(CString strInfo, CString strMsg)
+{
+	//时间+信息(昵称)+消息
+	CString strTime;
+	CTime tmNow;
+	tmNow = CTime::GetCurrentTime();
+	strTime = tmNow.Format("%X ");
+	CString strShow;
+	strShow = strTime + strInfo + strMsg;
+	return strShow;
 }

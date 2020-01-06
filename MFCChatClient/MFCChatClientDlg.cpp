@@ -204,22 +204,19 @@ void CMFCChatClientDlg::OnBnClickedSendBtn()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	//1 获取编辑框内容
-	CString strTmpMsg;
-	GetDlgItem(IDC_SENDMSG_EDIT)->GetWindowTextW(strTmpMsg);
+	CString strMsg;
+	GetDlgItem(IDC_SENDMSG_EDIT)->GetWindowTextW(strMsg);
 
 	USES_CONVERSION;
-	char* szSendBuf = T2A(strTmpMsg);
+	char* szSendBuf = T2A(strMsg);
 	//2 发送给服务端
-	m_client->Send(szSendBuf, 200, 0);
+	m_client->Send(szSendBuf, SEND_MAX_BUF, 0);
 
 	//3 显示到列表框
-	CString strShow = _T("我: ");
-	CString strTime;
-	m_tm = CTime::GetCurrentTime();
-	strTime = m_tm.Format("%X ");
-	//2019-11-17 我:内容
-	strShow = strTime + strShow;
-	strShow += strTmpMsg;
+	CString strShow;
+	CString strInfo = _T("我: ");
+	
+	strShow = CatShowString(strInfo, strMsg);
 
 	m_list.AddString(strShow);
 	UpdateData(FALSE);
@@ -230,5 +227,12 @@ void CMFCChatClientDlg::OnBnClickedSendBtn()
 CString CMFCChatClientDlg::CatShowString(CString strInfo, CString strMsg)
 {
 	//时间+信息(昵称)+消息
+	CString strTime;
+	CTime tmNow;
+	tmNow = CTime::GetCurrentTime();
+	strTime = tmNow.Format("%X ");
+	CString strShow;
+	strShow = strTime + strInfo + strMsg;
+	return strShow;
 }
 

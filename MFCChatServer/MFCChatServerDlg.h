@@ -5,7 +5,7 @@
 #pragma once
 #include "CServerSocket.h"
 #include "CChatSocket.h"
-
+#define MAX_SERVER_BUF 1024
 // CMFCChatServerDlg 对话框
 class CMFCChatServerDlg : public CDialogEx
 {
@@ -36,8 +36,11 @@ public:
 	afx_msg void OnBnClickedStartButton();
 	CListBox m_list;
 	CServerSocket *m_server;
-	CTime m_tm;
+	
 	CChatSocket* m_chat;
 
 	afx_msg void OnBnClickedSendButton();
+	
+	CString CatShowString(CString strInfo, CString strMsg);
+
 };
