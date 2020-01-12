@@ -22,7 +22,7 @@ void CChatSocket::OnReceive(int nErrorCode)
 	//2 显示buf
 	USES_CONVERSION;
 	CString strRecvMsg = A2T(szRecvBuf);
-	CString strInfo = _T("客户端: ");
+	CString strInfo = _T("");
 	
 	//2019-11-17 客户端:内容
 	CString strShow = dlg->CatShowString(strInfo,strRecvMsg);

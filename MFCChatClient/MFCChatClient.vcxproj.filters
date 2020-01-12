@@ -65,5 +65,14 @@
     <Image Include="res\MFCChatClient.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\BlueTiles.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\sheetbackground1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

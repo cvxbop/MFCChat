@@ -43,4 +43,8 @@ public:
 	
 	CString CatShowString(CString strInfo, CString strMsg);
 
+	afx_msg void OnBnClickedClearButton();
+	afx_msg void OnBnClickedStopButton();
+	CComboBox m_WordColorCombo;
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };

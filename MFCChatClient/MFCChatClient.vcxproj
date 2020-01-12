@@ -213,7 +213,10 @@
     <None Include="res\MFCChatClient.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\BlueTiles.bmp" />
     <Image Include="res\MFCChatClient.ico" />
+    <Image Include="res\sheetbackground1.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

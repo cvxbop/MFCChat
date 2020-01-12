@@ -215,6 +215,8 @@
     <None Include="res\MFCChatServer.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\BlueTiles.bmp" />
     <Image Include="res\MFCChatServer.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

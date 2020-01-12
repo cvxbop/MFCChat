@@ -42,4 +42,11 @@ public:
 	CEdit m_input;	//shift+alt+f  查找所有引用	VA
 	afx_msg void OnBnClickedSendBtn();
 	CString CatShowString(CString strInfo,CString strMsg);
+	afx_msg void OnBnClickedSavenameBtn();
+	afx_msg void OnBnClickedAutosendRadio();
+	afx_msg void OnBnClickedClearmsgBtn();
+	afx_msg void OnBnClickedAutosendCheck();
+	afx_msg void OnBnClickedDisconnectBtn();
+	CComboBox m_WordColorCombo;
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };
