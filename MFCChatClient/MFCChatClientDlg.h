@@ -49,4 +49,5 @@ public:
 	afx_msg void OnBnClickedDisconnectBtn();
 	CComboBox m_WordColorCombo;
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

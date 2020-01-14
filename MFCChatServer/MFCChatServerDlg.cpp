@@ -73,6 +73,9 @@ BEGIN_MESSAGE_MAP(CMFCChatServerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CLEAR_BUTTON, &CMFCChatServerDlg::OnBnClickedClearButton)
 	ON_BN_CLICKED(IDC_STOP_BUTTON, &CMFCChatServerDlg::OnBnClickedStopButton)
 	ON_WM_CTLCOLOR()
+	ON_BN_CLICKED(IDC_CAL_BUTTON, &CMFCChatServerDlg::OnBnClickedCalButton)
+	ON_BN_CLICKED(IDC_MAIL_BUTTON, &CMFCChatServerDlg::OnBnClickedMailButton)
+	ON_BN_CLICKED(IDC_QQ_BUTTON, &CMFCChatServerDlg::OnBnClickedQqButton)
 END_MESSAGE_MAP()
 
 
@@ -304,13 +307,13 @@ void CMFCChatServerDlg::OnBnClickedStopButton()
 
 	//2 回收资源
 	m_server->Close();
-	if (!m_server) {
+	if (m_server) {
 		delete m_server;
 		m_server = NULL;
 	}
 
 	
-	if (!m_chat) {
+	if (m_chat) {
 		delete m_chat;
 		m_chat = NULL;
 	}
@@ -350,4 +353,56 @@ HBRUSH CMFCChatServerDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		}
 	}
 	return hbr;
+}
+
+
+void CMFCChatServerDlg::OnBnClickedCalButton()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//执行shell命令
+// 	SHSTDAPI_(HINSTANCE) ShellExecuteW(_In_opt_ HWND hwnd, _In_opt_ LPCWSTR lpOperation, _In_ LPCWSTR lpFile, _In_opt_ LPCWSTR lpParameters,
+// 		_In_opt_ LPCWSTR lpDirectory, _In_ INT nShowCmd);
+	ShellExecute(NULL, L"open", L"calc.exe", NULL, NULL, SW_SHOWNORMAL);
+}
+
+
+void CMFCChatServerDlg::OnBnClickedMailButton()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	ShellExecute(NULL, L"open", L"https://mail.qq.com", NULL, NULL, SW_SHOWNORMAL);
+}
+
+
+void CMFCChatServerDlg::OnBnClickedQqButton()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	ShellExecute(NULL, L"open", L"D:\\Program Files (x86)\\Tencent\\QQLite\\Bin\\QQScLauncher.exe", NULL, NULL, SW_SHOWNORMAL);
+}
+
+
+BOOL CMFCChatServerDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	//规避回车键
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN) {
+		return TRUE;
+
+	}
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_SPACE) {
+		return TRUE;
+	}
+	//添加快捷键 ctrl+x 退出整个对话框 组合键
+	if (pMsg->message == WM_KEYDOWN) {
+		if (GetKeyState(VK_CONTROL) < 0)//ctrl 是否按下
+		{
+			TRACE("按下CTRL");
+			if (pMsg->wParam == 'X')
+			{
+				TRACE("按下CTRL+X");
+				CDialogEx::OnOK();
+			}
+		}
+		return FALSE;
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
 }

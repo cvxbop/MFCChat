@@ -259,10 +259,14 @@ void CMFCChatClientDlg::OnBnClickedConnectBtn()
 	GetDlgItem(IDC_IPADDRESS)->GetWindowText(strIP);
 
 	//CString转char *
+
 	USES_CONVERSION;
-	LPCTSTR szPort = (LPCTSTR)T2A(strPort);
-	LPCTSTR szIP = (LPCTSTR)T2A(strIP);
-	TRACE("szPort=%s,szIP=%s", szPort, szIP);
+	
+	//LPCTSTR szPort = (LPCTSTR)W2A(strPort);
+	LPCWSTR wszPort= strPort;
+	//LPCTSTR szIP = (LPCTSTR)W2A(strIP);
+	LPCWSTR wszIP = strIP;
+	TRACE(L"wszPort=%s,wszIP=%s", wszPort, wszIP);
 	
 	int iPort = _ttoi(strPort);
 	//创建一个socket对象
@@ -393,7 +397,7 @@ void CMFCChatClientDlg::OnBnClickedDisconnectBtn()
 
 	//2 回收资源
 	m_client->Close();
-	if (!m_client) {
+	if (m_client) {
 		delete m_client;
 		m_client = NULL;
 	}
@@ -432,4 +436,33 @@ HBRUSH CMFCChatClientDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	}
 	return hbr;
 		
+}
+
+
+BOOL CMFCChatClientDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	//规避回车键
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam==VK_RETURN) {
+		return TRUE;
+
+	}
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_SPACE) {
+		return TRUE;
+	}
+	//添加快捷键 ctrl+x 退出整个对话框 组合键
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (GetKeyState(VK_CONTROL)<0)//ctrl 是否按下
+		{	
+			TRACE("按下CTRL");
+			if (pMsg->wParam=='X')
+			{
+				TRACE("按下CTRL+X");
+				CDialogEx::OnOK();
+			}
+		}
+		return FALSE;
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
 }
